@@ -120,16 +120,17 @@ class BiLiVideoConvert:
         movies_list = []
         for index, [vid, movie] in enumerate(self.movies.items()):
             movies_list.append(vid)
-            print(f"{index + 1}、[{movie['download_total']:-3}/{movie['total']:-3}]  {movie['title']}")
+            print(f"{index + 1}、({vid: <12})[{movie['download_total']:-3}/{movie['total']:-3}] {movie['title']}")
 
-        in_index: str = input("请输入要转换的编号: ")
-        if in_index == "all":
-            # for movies in movies_list:
-            #     self.create_movie(movies)
-            pass
+        index: str = input("请输入要转换的编号(all 全部, exit 退出): ")
+        if index == "all":
+            for vid in movies_list:
+                self.convert(vid)
+        elif index in ["exit"]:
+            print("用户退出")
+            exit(0)
         else:
-            # self.create_movie(movies_list[int(in_index) - 1])
-            pass
+            self.convert(movies_list[int(index) - 1])
 
     def run(self):
         """
