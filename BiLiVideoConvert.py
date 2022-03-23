@@ -4,6 +4,7 @@ import json
 import warnings
 from sys import argv
 from getopt import getopt
+from subprocess import Popen
 
 DEVNULL = open(os.devnull, 'w')
 CONFIG = {}
@@ -138,6 +139,23 @@ def format_video_name(**video_info: dict) -> str:
     # 视频标题
     result = result.replace("{title}", title)
     return result
+
+
+def composite_video(video_path: str, audio_path: str, out_path: str):
+    """
+    合成mp4文件
+    :param video_path: 视频路径
+    :param audio_path: 音频路径
+    :param out_path: 输出路径
+    :return:
+    """
+    # 生成合成命令
+    cmd = f'ffmpeg -y -i "{video_path}" -i "{audio_path}" -codec copy "{out_path}"'
+    print('*' * 50)
+    print("视频源：" + video_path)
+    print("音频源：" + audio_path)
+    print("输出源：" + out_path)
+    Popen(cmd, stderr=DEVNULL).wait()
 
 
 def filename_filter(filename: str, repl: str = '') -> str:
