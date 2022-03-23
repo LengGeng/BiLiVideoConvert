@@ -8,6 +8,7 @@ from getopt import getopt
 DEVNULL = open(os.devnull, 'w')
 CONFIG = {}
 CONFIG_PATH = "config.json"
+FORMAT_VIDEO_NAME = "{i}、{title}-{name}"
 
 
 class BiLiVideoConvert:
@@ -111,6 +112,32 @@ class BiLiVideoConvert:
         print("解析视频信息完成")
         self.show_info()
         pass
+
+
+def format_video_name(**video_info: dict) -> str:
+    """
+    根据 FORMAT_VIDEO_NAME 格式化转换的视频文件名
+    {title} 视频标题
+    {name} {part} 视频名称
+    {i} {page} {index} 视频索引,从1开始
+    :param video_info: 视频信息
+    :return: 格式化后的文件名
+    """
+    title = video_info.get("title", "")
+    part = video_info.get("part", "")
+    page = str(video_info.get("page", ""))
+    # TODO 判断视频名称是否包序号 part.startswith(page), 存在则不添加序号
+    result = FORMAT_VIDEO_NAME + ".mp4"
+    # 视频索引
+    result = result.replace("{i}", page)
+    result = result.replace("{index}", page)
+    result = result.replace("{page}", page)
+    # 视频名称
+    result = result.replace("{name}", part)
+    result = result.replace("{part}", part)
+    # 视频标题
+    result = result.replace("{title}", title)
+    return result
 
 
 def filename_filter(filename: str, repl: str = '') -> str:
