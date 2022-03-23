@@ -4,6 +4,7 @@ import json
 import warnings
 from sys import argv
 from getopt import getopt
+from typing import Union
 from subprocess import Popen
 
 DEVNULL = open(os.devnull, 'w')
@@ -83,6 +84,33 @@ class BiLiVideoConvert:
                     if entry:
                         yield entry
                         # if movie_dir == str(entry['vid'])
+
+    def convert(self, vid: Union[int, str]):
+        # 视频项目目录
+        if vid in self.movies:
+            movie_info = self.movies.get(vid)
+            print(movie_info)
+        else:
+            print("无效的视频ID")
+            return
+        # 拼接视频输出目录
+        project_output_dir = filename_filter(os.path.join(self.output_dir, movie_info["title"]))
+        # 判断目录是否存在,没有就创建
+        if not os.path.exists(project_output_dir):
+            os.makedirs(project_output_dir)
+        # 转换视频
+        for page_data in movie_info["page_data"]:
+            # 判断视频是否下载完成
+            if page_data["is_completed"]:
+                # 获取格式化后的文件名
+                page_name = format_video_name(**movie_info, **page_data)
+                composite_video(
+                    os.path.abspath(page_data["video_path"]),
+                    os.path.abspath(page_data["audio_path"]),
+                    os.path.abspath(os.path.join(project_output_dir, filename_filter(page_name)))
+                )
+            else:
+                print(f"{movie_info.get('title')}-{page_data.get('part')}未下载完成!")
 
     def show_info(self):
         """
