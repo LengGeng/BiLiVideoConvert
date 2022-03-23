@@ -1,3 +1,4 @@
+import re
 import os
 import json
 import warnings
@@ -110,6 +111,16 @@ class BiLiVideoConvert:
         print("解析视频信息完成")
         self.show_info()
         pass
+
+
+def filename_filter(filename: str, repl: str = '') -> str:
+    """
+    将文件名替换成合法的文件名
+    :param filename: 原文件名
+    :param repl: 替换字符
+    :return: 合法文件名
+    """
+    return re.sub('[/:*?"<>|]', repl, filename)
 
 
 def parse_entry(entry_file):
